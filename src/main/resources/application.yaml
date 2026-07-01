@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    default: dev 
+
+
+
+# mybatis:
+#     # mappers 폴더 아래에 있는 ~Mapper.xml만 찾도록 설정
+#     mapper-locations: classpath:mappers/**/*Mapper.xml 
+#     # 설정 파일은 따로 한 번만 지정
+#     config-location: classpath:mappers/config/mybatis-config.xml

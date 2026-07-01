@@ -1,0 +1,33 @@
+server:
+  port: 8000
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+  
+  # datasource는 spring 아래에 있어야 함!
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/inspire
+    username: root
+    password: 1004
+
+  jpa:
+    hibernate:
+    #create, create-drop, update, none
+      ddl-auto: none
+
+    #콘솔 출력
+    show-sql: true
+    properties:
+      hibernate:
+      #mariadb
+        dialect: org.hibernate.dialect.MariaDBDialect
+        format_sql: true
+
+
+jwt:
+  # 개발용 시크릿 키 (운영에서는 환경 변수 등으로 외부 주입)
+  secret: ${JWT_SECRET_KEY}
+  
