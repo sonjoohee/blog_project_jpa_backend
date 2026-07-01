@@ -3,9 +3,9 @@ package com.inspire.blog_jpa.features.user.domain.dto;
 import com.inspire.blog_jpa.features.user.domain.entity.UserEntity;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;    
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Builder
@@ -14,11 +14,13 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserResponseDTO {
-    private String email, name, role;
+    
+    private String email, password, name, role ; 
 
     public static UserResponseDTO fromEntity(UserEntity entity) {
         return UserResponseDTO.builder()
                 .email(entity.getEmail())
+                .password(entity.getPassword())
                 .name(entity.getName())
                 .role(entity.getRole())
                 .build();

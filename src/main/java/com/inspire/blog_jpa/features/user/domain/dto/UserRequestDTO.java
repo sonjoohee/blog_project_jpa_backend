@@ -1,6 +1,5 @@
 package com.inspire.blog_jpa.features.user.domain.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.inspire.blog_jpa.features.user.domain.entity.UserEntity;
 
 import jakarta.validation.constraints.Email;
@@ -14,14 +13,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
-
+@Builder
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@JsonIgnoreProperties(ignoreUnknown = true) // 이걸 추가!
 
 /*
 
@@ -53,9 +50,7 @@ public class UserRequestDTO {
                 .email(request.getEmail())
                 .password(request.getPassword())
                 .name(request.getName())
-                .role(request.getRole())
                 .build();
     }
 }
-
 

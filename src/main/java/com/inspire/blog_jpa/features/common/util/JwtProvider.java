@@ -1,53 +1,51 @@
 package com.inspire.blog_jpa.features.common.util;
 
-import org.springframework.beans.factory.annotation.Value;
 import java.nio.charset.StandardCharsets;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-
 import java.security.Key;
 import java.util.Date;
- 
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtProvider {
 
-    @Value("${jwt.secret}") //.yml에 등록된 키값을 사용할 수 있음 
-    private String secret;
+    @Value("${jwt.secret}") // .yml 에 등록된 키값을 사용할 수 있음.
+    private String secret ; 
 
-    private final long ACCESSTOKEN_EXPIRATION_TIME = 1000 * 60 *30;
-    private final long REFRESHTOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7;
+
+    // private final long ACCESS_TOKEN_EXPIRY  = 1000L * 60 * 30 ; 
+    // private final long REFRESH_TOKEN_EXPIRY = 1000L * 60 * 60 * 24 * 7 ;  
 
 
     private Key getSecretKey() {
-        //가져온 secret을 인코딩 시켜주는 작업
-        System.out.println("secret key : " + secret);
-        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        System.out.println("debug >>>> Provider jwt secret : "+secret); 
+        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)) ;    
     }
     
-    //토큰 생성
     public String createAT(String email) {
-        System.out.println("createAT : ");
+        System.out.println("debug >>>> Provider createAT : ");
+
         return Jwts.builder()
-                .setIssuedAt(new Date())
-                .setSubject(email)
-                .setExpiration(new Date(System.currentTimeMillis() + ACCESSTOKEN_EXPIRATION_TIME))
-                .signWith(getSecretKey(), SignatureAlgorithm.HS256)
-                .compact();
+                    .setSubject(email)
+                    .setIssuedAt(new Date())
+                    .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 30))
+                    .signWith(getSecretKey())
+                    .compact() ;
     }
 
-    //리프레시 토큰 생성
     public String createRT(String email) {
-        System.out.println("createRT : ");
-         return Jwts.builder()
-                .setSubject(email)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + REFRESHTOKEN_EXPIRATION_TIME))
-                .signWith(getSecretKey(), SignatureAlgorithm.HS256)
-                .compact();
-    
+        System.out.println("debug >>>> Provider createRT : ");
+
+        return Jwts.builder()
+                    .setSubject(email)
+                    .setIssuedAt(new Date())
+                    .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 7 ))
+                    .signWith(getSecretKey())
+                    .compact() ;
     }
+
 }
