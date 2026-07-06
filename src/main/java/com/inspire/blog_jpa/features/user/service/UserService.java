@@ -73,4 +73,58 @@ public class UserService {
 
         
     }
+
+    // redis token add 
+    public Map<String, Object> signIn(UserRequestDTO request) {
+        System.out.println(">>>> debug user service signIn "); 
+
+        Map<String, Object> map = new HashMap<>();
+        
+        // plain text version 
+        // UserEntity entity = 
+        //     userRepository.findByEmailAndPassword(request.getEmail(), request.getPassword())
+        //     .orElseThrow(() -> 
+        //         new RuntimeException("로그인 실패")
+        //     );
+            
+        // hashing version 
+        UserEntity entity =  userRepository.findById(request.getEmail())
+                                .orElseThrow(() -> 
+                                    new RuntimeException("Not Found!!")) ;
+        if( !passwordEncoder.matches(request.getPassword(), entity.getPassword())) {
+            throw new RuntimeException("Password Not Matches");
+        }
+
+        
+        String at = jwtProvider.createAT(entity.getEmail());
+        String rt = jwtProvider.createRT(entity.getEmail());
+        System.out.println(">>>> debug user service at :  "+at);
+        System.out.println(">>>> debug user service rt :  "+rt);
+
+
+        // // inMemory DB - Redis, H2 
+        // // at, rt 담아서 관리 , 인증코드 - docker (가상화기반에서 redis)
+
+        System.out.println(">>>> debug user service RT redsi save") ; 
+        redisService.saveToken(entity.getEmail(),  rt);
+
+
+        map.put("data", UserResponseDTO.fromEntity(entity));
+        map.put("at"  , at);
+        map.put("rt"  , rt); 
+
+        return map ;
+
+        
+    }
+
+    // redis token delete
+    public void signOut(String at) {
+        System.out.println(">>>> debug user service signOut at : "+at); 
+        String email = jwtProvider.getUserEmailFromAT(at) ;
+        redisService.deleteToken(email); 
+
+    }
+
+
 }

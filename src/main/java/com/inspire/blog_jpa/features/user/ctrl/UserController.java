@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 
 /*
@@ -91,6 +92,20 @@ public class UserController {
                 .body((UserResponseDTO)(map.get("data")));
                 
     }
+
+    @PostMapping("/users/logout")
+    public ResponseEntity<?> signOut(@RequestHeader("Authorization") String authorization) {
+        System.out.println(">>>> debug user controller logout "); 
+        System.out.println(">>>> debug user controller logout authorization : "+authorization);
+
+        String at = authorization.replace("Bearer ", "");
+        userService.signOut(at); 
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+
+        
+    }
+    
     
     
 

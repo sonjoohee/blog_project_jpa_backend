@@ -1,5 +1,10 @@
 package com.inspire.blog_jpa.features.user.domain.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.inspire.blog_jpa.features.blog.domain.entity.BlogEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -31,7 +36,8 @@ public class UserEntity {
     private String name ;
     private String role ; 
 
-    // @OneToMany()
-    // private List<BlogEntity> blogs = new ArrayList<>(); 
+    @OneToMany(mappedBy = "author", orphanRemoval = false)
+    //orphanRemoval = false : 부모 엔티티가 삭제되어도 자식 엔티티가 삭제되지 않음
+    private List<BlogEntity> blogs = new ArrayList<>(); 
 
 }

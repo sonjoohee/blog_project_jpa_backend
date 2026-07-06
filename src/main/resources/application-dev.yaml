@@ -22,9 +22,24 @@ spring:
     show-sql: true
     properties:
       hibernate:
+      
       #mariadb
         dialect: org.hibernate.dialect.MariaDBDialect
         format_sql: true
+
+
+    # redis -  in memory DB
+    # docker
+    #docker run -d --name redis-container -p 6379:6379 redis:7.2
+    #docker exec -it redis-container redis-cli
+    #docker run -d --name redis-insight -p 8001:8001 redis/redisinsight:latest
+    #http://localhost:8001
+    data:
+      redis:
+        host: localhost
+        port: 6379
+        password:
+        database: 6000ms
 
 
 jwt:

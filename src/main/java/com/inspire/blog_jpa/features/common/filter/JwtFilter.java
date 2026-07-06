@@ -66,8 +66,6 @@ public class JwtFilter implements Filter{
             res.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Refresh-token");
             res.setHeader("Access-Control-Allow-Credentials", "true");
 
-
-            chain.doFilter(request, response);
             return ;
         }
 
@@ -81,12 +79,12 @@ public class JwtFilter implements Filter{
         // request header 에 심어져있는 token 검증(만료, 서명이 맞는지) 
         String header = req.getHeader("Authorization");
         System.out.println("debug >>>> JwtFilter header "+header) ; 
-        if( header == null || !header.startsWith("Bearer ")) {
+        if( header == null || header.isEmpty()) {
             System.out.println("debug >>>> JwtFilter Not Authorization") ; 
             res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return ;
         }
-        String token = header.substring(7);
+        String token = header;
         System.out.println("debug >>>> JwtFilter token : "+token) ; 
         System.out.println("debug >>>> JwtFilter token validation ") ; 
         try{
