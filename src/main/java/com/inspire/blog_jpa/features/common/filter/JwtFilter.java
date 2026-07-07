@@ -23,7 +23,7 @@ Filter ?
 상황에 따라서 토큰 유무를 판단하지 않는 endPoint 있다 : white list 
 
 */
-@Component
+// @Component
 public class JwtFilter implements Filter{
 
 

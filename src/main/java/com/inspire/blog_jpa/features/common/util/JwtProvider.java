@@ -7,6 +7,7 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
@@ -48,4 +49,14 @@ public class JwtProvider {
                     .compact() ;
     }
 
+    //access token를 통해서 subject 추출
+    public String getUserEmailFromAT(String at) {
+        System.out.println("debug >>>> Provider getUserEmailFromAT at : "+at); 
+        Claims claims = Jwts.parser()
+                .setSigningKey(getSecretKey())
+                .parseClaimsJws(at)
+                .getBody() ; 
+        System.out.println("debug >>>> Provider claims.getSubject : "+claims.getSubject());         
+        return claims.getSubject() ;     
+    }
 }

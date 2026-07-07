@@ -4,9 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.inspire.blog_jpa.features.common.service.RedisService;
 import com.inspire.blog_jpa.features.common.util.JwtProvider;
 import com.inspire.blog_jpa.features.user.domain.dto.UserRequestDTO;
 import com.inspire.blog_jpa.features.user.domain.dto.UserResponseDTO;
@@ -27,6 +29,10 @@ public class UserService {
     private final UserRepository    userRepository ; 
     private final JwtProvider       jwtProvider ;
 
+    private final RedisService      redisService ;
+
+    private final PasswordEncoder passwordEncoder ;
+
 
     @Transactional
     public UserResponseDTO signUp(UserRequestDTO request) {
@@ -45,34 +51,6 @@ public class UserService {
 
     }
 
-    public Map<String, Object> signIn(UserRequestDTO request) {
-        System.out.println(">>>> debug user service signIn "); 
-
-        Map<String, Object> map = new HashMap<>();
-        
-        UserEntity entity = 
-            userRepository.findByEmailAndPassword(request.getEmail(), request.getPassword())
-            .orElseThrow(() -> 
-                new RuntimeException("로그인 실패")
-            );
-            
-        
-        String at = jwtProvider.createAT(entity.getEmail());
-        String rt = jwtProvider.createRT(entity.getEmail());
-        System.out.println(">>>> debug user service at :  "+at);
-        System.out.println(">>>> debug user service rt :  "+rt);
-
-
-        // // inMemory DB - Redis, H2 
-        // // at, rt 담아서 관리 , 인증코드 - docker (가상화기반에서 redis)
-        map.put("data", UserResponseDTO.fromEntity(entity));
-        map.put("at"  , at);
-        map.put("rt"  , rt); 
-
-        return map ;
-
-        
-    }
 
     // redis token add 
     public Map<String, Object> signIn(UserRequestDTO request) {
@@ -88,9 +66,11 @@ public class UserService {
         //     );
             
         // hashing version 
+        // 로그인/가입하러 온 유저의 이메일로 DB에서 기존 회원 정보를 꺼내옴
         UserEntity entity =  userRepository.findById(request.getEmail())
                                 .orElseThrow(() -> 
                                     new RuntimeException("Not Found!!")) ;
+        //꺼내온 DB 비밀번호(entity)와 방금 넘겨받은 비밀번호(request)를 대조함
         if( !passwordEncoder.matches(request.getPassword(), entity.getPassword())) {
             throw new RuntimeException("Password Not Matches");
         }
@@ -125,6 +105,5 @@ public class UserService {
         redisService.deleteToken(email); 
 
     }
-
 
 }

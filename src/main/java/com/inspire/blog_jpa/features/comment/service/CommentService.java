@@ -2,9 +2,10 @@ package com.inspire.blog_jpa.features.comment.service;
 
 import java.util.List;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+    
 import com.inspire.blog_jpa.features.blog.domain.dto.BlogRequestDTO;
 import com.inspire.blog_jpa.features.blog.domain.dto.BlogResponseDTO;
 import com.inspire.blog_jpa.features.blog.domain.entity.BlogEntity;
@@ -73,6 +74,11 @@ public class CommentService {
             .orElseThrow(() -> new RuntimeException("댓글 찾기 오류"));
         comment.updateComment(request.getComment()); 
 
+    }
+
+    //리팩토링 측면에서 공통의 코드를 메서드로 정의
+    private String getAuthEEmail() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
 }
